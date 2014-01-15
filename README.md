@@ -10,6 +10,7 @@ Erlang IRC Client
 Config = eric_config:load("client.config").
 Client = eric:start(Config).
 
+eric:connect(Client).
 eric:join(Client, "#channel").
 eric:say(Client, "#channel", "Hello world").
 eric:nick(Client, "EricII").
