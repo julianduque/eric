@@ -1,0 +1,14 @@
+{application, eric,
+ [
+  {description, "An Erlang IRC Client"},
+  {vsn, "0.0.1"},
+  {modules, [
+             eric
+            ]},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.

@@ -1,0 +1,1 @@
+-define(CRNL, "\r\n").
