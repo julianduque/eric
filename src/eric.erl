@@ -29,7 +29,6 @@ say(Channel, Message) ->
 %% Callbacks
 
 init(Config) ->
-  io:format("~p~n", [Config]),
   Net = eric_net:start_link(Config),
   State = #state{net=Net},
   {ok, State}.
