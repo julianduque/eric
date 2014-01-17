@@ -13,7 +13,9 @@ eric:connect().
 eric:join("#channel").
 eric:say("#channel", "Hello world").
 eric:nick("EricII").
+eric:whois("eric").
 ```
+
 
 ## The MIT License (MIT)
 
