@@ -10,7 +10,8 @@
                 host,
                 port,
                 socket,
-                client}).
+                client
+               }).
 
 start(Config) ->
   spawn(?MODULE, init, [Config]).
@@ -30,18 +31,22 @@ init(Config) ->
 loop(State = #state{}) ->
   receive
     {Client, connect} ->
-      connect(State),
-      loop(State#state{client=Client});
+      NewState = State#state{client=Client},
+      connect(NewState),
+      loop(NewState);
+    {send, Data} ->
+      send(State#state.socket, Data),
+      loop(State);
     {Client, send, Data} ->
       send(State#state.socket, Data),
       loop(State#state{client=Client});
     {tcp, Socket, Data} ->
-      io:format("~p ~p ~n", [Socket, binary_to_list(Data)]),
-      loop(State#state{socket=Socket});
+      NewState = State#state{socket=Socket},
+      handle_receive(Data, NewState),
+      loop(NewState);
     {tcp_closed, _Socket} ->
       ok;
-    Unknown ->
-      io:format("Unknown ~p", [Unknown]),
+    _Unknown ->
       loop(State)
   end.
 
@@ -60,3 +65,7 @@ connect(State) ->
 
 send(Socket, Data) ->
   gen_tcp:send(Socket, Data ++ ?CRNL).
+
+handle_receive(Data, State) ->
+  Client = State#state.client,
+  Client ! {response, binary_to_list(Data)}.
