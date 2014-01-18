@@ -39,8 +39,8 @@ loop(State = #state{}) ->
         true ->
           loop(State);
         false ->
-          NewState = State#state{client=Client, connected=true},
-          connect(NewState),
+          Socket = connect(State),
+          NewState = State#state{client=Client, socket=Socket, connected=true},
           loop(NewState)
       end;
     {send, Data} ->
@@ -83,7 +83,8 @@ connect(State) ->
                        [binary, {active, true}, {packet, line}, {keepalive, true}]) of
     {ok, Socket} ->
       send(Network, Socket, "NICK " ++ State#state.nick),
-      send(Network, Socket, "USER " ++ State#state.username ++ " * * " ++ State#state.realname);
+      send(Network, Socket, "USER " ++ State#state.username ++ " * * " ++ State#state.realname),
+      Socket;
     {error, Reason} ->
       io:format("Error: ~p", [Reason]),
       error
