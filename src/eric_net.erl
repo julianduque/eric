@@ -10,7 +10,8 @@
                 host,
                 port,
                 socket,
-                client
+                client,
+                connected=false
                }).
 
 start(Config) ->
@@ -31,9 +32,14 @@ init(Config) ->
 loop(State = #state{}) ->
   receive
     {Client, connect} ->
-      NewState = State#state{client=Client},
-      connect(NewState),
-      loop(NewState);
+      case State#state.connected of
+        true ->
+          loop(State);
+        false ->
+          NewState = State#state{client=Client, connected=true},
+          connect(NewState),
+          loop(NewState)
+      end;
     {send, Data} ->
       send(State#state.socket, Data),
       loop(State);
@@ -46,7 +52,8 @@ loop(State = #state{}) ->
       loop(NewState);
     {tcp_closed, _Socket} ->
       ok;
-    _Unknown ->
+    Unknown ->
+      io:format("Unknown ~p~n", [Unknown]),
       loop(State)
   end.
 
