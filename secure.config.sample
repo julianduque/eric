@@ -1,0 +1,6 @@
+[{nick, "eric_test"},
+ {username, "eric"},
+ {realname, "Eric the client"},
+ {host, "irc.freenode.net"},
+ {port, 6697},
+ {secure, true}].
