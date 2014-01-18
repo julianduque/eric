@@ -11,7 +11,7 @@ Config = eric_config:load("client.config").
 
 eric:connect().
 eric:join("#channel").
-eric:say("#channel", "Hello world").
+eric:msg("#channel", "Hello world").
 eric:nick("EricII").
 eric:whois("eric").
 ```

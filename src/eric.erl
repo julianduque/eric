@@ -2,7 +2,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start/1, start/2, stop/0, connect/0, join/1, nick/1, say/2, whois/1, quit/0, quit/1]).
+-export([start/1, start/2, stop/0, connect/0, join/1, nick/1, msg/2, whois/1, quit/0, quit/1]).
 
 %% Callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
@@ -32,8 +32,8 @@ nick(Nick) ->
 join(Channel) ->
   gen_server:call(eric, {join, Channel}).
 
-say(Channel, Message) ->
-  gen_server:call(eric, {say, Channel, Message}).
+msg(Channel, Message) ->
+  gen_server:call(eric, {msg, Channel, Message}).
 
 whois(Nick) ->
   gen_server:cast(eric, {whois, Nick}).
@@ -63,7 +63,7 @@ handle_call({nick, Nick}, _Ref, State) ->
   State#state.net ! {send, "NICK " ++ Nick},
   {reply, ok, State};
 
-handle_call({say, Channel, Message}, _Ref, State) ->
+handle_call({msg, Channel, Message}, _Ref, State) ->
   State#state.net ! {send, "PRIVMSG " ++ Channel ++ " :" ++ Message},
   {reply, ok, State};
 
