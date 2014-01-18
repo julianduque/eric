@@ -4,7 +4,7 @@
 -export([start/1, init/1, handle_event/2, handle_call/2, handle_info/2, code_change/3, terminate/2]).
 
 start(Config) ->
-  eric:start(Config, custom_reply),
+  eric:start(Config, ?MODULE),
   eric:connect(),
   eric:join("#eric-test"),
   eric:msg("#eric-test", "Hey!").
