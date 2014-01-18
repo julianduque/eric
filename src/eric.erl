@@ -77,7 +77,7 @@ handle_cast({whois, Nick}, State) ->
   {noreply, State};
 
 handle_cast(stop, State) ->
-  gen_server:call({quit, []}),
+  quit(),
   {stop, normal, State};
 
 handle_cast(_, State) ->
