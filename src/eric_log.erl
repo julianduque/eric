@@ -7,7 +7,7 @@ init([]) ->
   {ok, []}.
 
 handle_event({response, Data}, State) ->
-  io:format("~s", [Data]),
+  io:format("[~s] ~s", [color:greenb("info"), Data]),
   {ok, State};
 
 handle_event(_, State) ->
