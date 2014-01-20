@@ -105,18 +105,47 @@ cmd_to_atom(<<"406">>) -> err_wasnosuchnick;
 cmd_to_atom(<<"407">>) -> err_toomanytargets;
 cmd_to_atom(<<"409">>) -> err_noorigin;
 cmd_to_atom(<<"411">>) -> err_norecipient;
+cmd_to_atom(<<"412">>) -> err_notexttosend;
+cmd_to_atom(<<"413">>) -> err_notoplevel;
+cmd_to_atom(<<"414">>) -> err_wildtoplevel;
+cmd_to_atom(<<"421">>) -> err_unknowncommand;
+cmd_to_atom(<<"422">>) -> err_nomotd;
+cmd_to_atom(<<"423">>) -> err_noadmininfo;
+cmd_to_atom(<<"424">>) -> err_fileerror;
+cmd_to_atom(<<"431">>) -> err_nonicknamegiven;
+cmd_to_atom(<<"432">>) -> err_erroneusnickname;
+cmd_to_atom(<<"433">>) -> err_nicknameinuse;
+cmd_to_atom(<<"436">>) -> err_nickcollision;
+cmd_to_atom(<<"441">>) -> err_usernotinchannel;
+cmd_to_atom(<<"442">>) -> err_notonchannel;
+cmd_to_atom(<<"443">>) -> err_useronchannel;
+cmd_to_atom(<<"444">>) -> err_nologin;
+cmd_to_atom(<<"445">>) -> err_summondisabled;
+cmd_to_atom(<<"446">>) -> err_usersdisabled;
+cmd_to_atom(<<"451">>) -> err_notregistered;
+cmd_to_atom(<<"461">>) -> err_needmoreparams;
+cmd_to_atom(<<"462">>) -> err_alreadyregistred;
+cmd_to_atom(<<"463">>) -> err_nopermforhost;
+cmd_to_atom(<<"464">>) -> err_passwdmismatch;
+cmd_to_atom(<<"465">>) -> err_yourebannedcreep;
+cmd_to_atom(<<"467">>) -> err_keyset;
+cmd_to_atom(<<"471">>) -> err_channelisfull;
+cmd_to_atom(<<"472">>) -> err_unknownmode;
+cmd_to_atom(<<"473">>) -> err_inviteonlychan;
+cmd_to_atom(<<"474">>) -> err_bannedfromchan;
+cmd_to_atom(<<"475">>) -> err_badchannelkey;
+cmd_to_atom(<<"481">>) -> err_noprivileges;
+cmd_to_atom(<<"482">>) -> err_chanoprivsneeded;
+cmd_to_atom(<<"483">>) -> err_cantkillserver;
+cmd_to_atom(<<"491">>) -> err_nooperhost;
+cmd_to_atom(<<"492">>) -> err_noservicehost;
+cmd_to_atom(<<"501">>) -> err_umodeunknownflag;
+cmd_to_atom(<<"502">>) -> err_usersdontmatch;
 cmd_to_atom(<<"NOTICE">>) -> notice;
 cmd_to_atom(<<"JOIN">>) -> join;
 cmd_to_atom(<<"PING">>) -> ping;
+cmd_to_atom(<<"PONG">>) -> ping;
 cmd_to_atom(<<"PRIVMSG">>) -> privmsg;
 cmd_to_atom(<<"MODE">>) -> mode;
-cmd_to_atom(<<"PONG">>) -> ping;
+cmd_to_atom(<<"NICK">>) -> nick;
 cmd_to_atom(Cmd) -> Cmd.
-
-% Separated by space
-% Prefix starts with :
-
-% Command can be numeric of string
-%
-% CRLF 
-
