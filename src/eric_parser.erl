@@ -144,7 +144,7 @@ cmd_to_atom(<<"502">>) -> err_usersdontmatch;
 cmd_to_atom(<<"NOTICE">>) -> notice;
 cmd_to_atom(<<"JOIN">>) -> join;
 cmd_to_atom(<<"PING">>) -> ping;
-cmd_to_atom(<<"PONG">>) -> ping;
+cmd_to_atom(<<"PONG">>) -> pong;
 cmd_to_atom(<<"PRIVMSG">>) -> privmsg;
 cmd_to_atom(<<"MODE">>) -> mode;
 cmd_to_atom(<<"NICK">>) -> nick;
