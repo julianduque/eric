@@ -49,11 +49,7 @@ loop(State = #state{}) ->
     {Client, send, Data} ->
       send(Network, State#state.socket, Data),
       loop(State#state{client=Client});
-    {tcp, Socket, Data} ->
-      NewState = State#state{socket=Socket},
-      handle_receive(Data, NewState),
-      loop(NewState);
-    {ssl, Socket, Data} ->
+    {_, Socket, Data} ->
       NewState = State#state{socket=Socket},
       handle_receive(Data, NewState),
       loop(NewState);
@@ -91,8 +87,8 @@ connect(State) ->
   end.
 
 send(Network, Socket, Data) ->
-  Network:send(Socket, Data ++ ?CRNL).
+  Network:send(Socket, Data ++ ?CRLF).
 
 handle_receive(Data, State) ->
   Client = State#state.client,
-  Client ! {response, binary_to_list(Data)}.
+  Client ! eric_parser:parse(Data).

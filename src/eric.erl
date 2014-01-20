@@ -2,7 +2,7 @@
 -behaviour(gen_server).
 
 %% API
--export([start/1, start/2, stop/0, connect/0, join/1, nick/1, msg/2, whois/1, quit/0, quit/1]).
+-export([start/1, start/2, stop/0, connect/0, send/1, join/1, nick/1, msg/2, whois/1, quit/0, quit/1]).
 
 %% Callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
@@ -25,6 +25,9 @@ stop() ->
 
 connect() ->
   gen_server:call(eric, connect).
+
+send(Data) ->
+  gen_server:call(eric, {send, Data}).
 
 nick(Nick) ->
   gen_server:call(eric, {nick, Nick}).
@@ -53,6 +56,10 @@ init(Config) ->
 %%% Calls
 handle_call(connect, _Ref, State) ->
   State#state.net ! {self(), connect},
+  {reply, ok, State};
+
+handle_call({send, Data}, _Ref, State) ->
+  State#state.net ! {self(), send, Data},
   {reply, ok, State};
 
 handle_call({join, Channel}, _Ref, State) ->

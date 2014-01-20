@@ -1,1 +1,1 @@
--define(CRNL, "\r\n").
+-define(CRLF, "\r\n").
