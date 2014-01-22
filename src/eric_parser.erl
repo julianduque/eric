@@ -142,10 +142,14 @@ cmd_to_atom(<<"492">>) -> err_noservicehost;
 cmd_to_atom(<<"501">>) -> err_umodeunknownflag;
 cmd_to_atom(<<"502">>) -> err_usersdontmatch;
 cmd_to_atom(<<"NOTICE">>) -> notice;
-cmd_to_atom(<<"JOIN">>) -> join;
 cmd_to_atom(<<"PING">>) -> ping;
+cmd_to_atom(<<"JOIN">>) -> join;
+cmd_to_atom(<<"PART">>) -> part;
 cmd_to_atom(<<"PONG">>) -> pong;
 cmd_to_atom(<<"PRIVMSG">>) -> privmsg;
 cmd_to_atom(<<"MODE">>) -> mode;
+cmd_to_atom(<<"QUIT">>) -> quit;
+cmd_to_atom(<<"KICK">>) -> kick;
 cmd_to_atom(<<"NICK">>) -> nick;
+cmd_to_atom(<<"TOPIC">>) -> topic;
 cmd_to_atom(Cmd) -> Cmd.

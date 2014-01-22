@@ -3,6 +3,7 @@
 
 %% API
 -export([start/1, start/2, stop/0, connect/0, send/1, join/1, nick/1, msg/2, whois/1, quit/0, quit/1]).
+-export([say/2, names/1, part/1]).
 
 %% Callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
@@ -35,8 +36,14 @@ nick(Nick) ->
 join(Channel) ->
   gen_server:call(eric, {join, Channel}).
 
+part(Channel) ->
+  gen_server:call(eric, {part, Channel}).
+
 msg(Channel, Message) ->
   gen_server:call(eric, {msg, Channel, Message}).
+
+say(Channel, Message) ->
+  msg(Channel, Message).
 
 whois(Nick) ->
   gen_server:cast(eric, {whois, Nick}).
@@ -46,6 +53,9 @@ quit() ->
 
 quit(Message) ->
   gen_server:call(eric, {quit, Message}).
+
+names(Channel) ->
+  gen_server:call(eric, {names, Channel}).
 
 %% Callbacks
 init(Config) ->
@@ -66,12 +76,20 @@ handle_call({join, Channel}, _Ref, State) ->
   State#state.net ! {send, "JOIN " ++ Channel},
   {reply, ok, State};
 
+handle_call({part, Channel}, _Ref, State) ->
+  State#state.net ! {send, "PART " ++ Channel},
+  {reply, ok, State};
+
 handle_call({nick, Nick}, _Ref, State) ->
   State#state.net ! {send, "NICK " ++ Nick},
   {reply, ok, State};
 
 handle_call({msg, Channel, Message}, _Ref, State) ->
   State#state.net ! {send, "PRIVMSG " ++ Channel ++ " :" ++ Message},
+  {reply, ok, State};
+
+handle_call({names, Channel}, _Ref, State) ->
+  State#state.net ! {send, "NAMES " ++ Channel},
   {reply, ok, State};
 
 handle_call({quit, Message}, _Ref, State) ->
