@@ -88,6 +88,38 @@ handle_event({response, [_, _, rpl_endofmotd, _, Msg]}, State) ->
   print_motd(Msg),
   {ok, State};
 
+% WHOIS
+handle_event({response, [_, _, rpl_whoisuser, _, Nick, Username, Host, _, Realname]}, State) ->
+  io:format("[~s] ~s <~s@~s> ~n", [color:redb("whois"),
+                               color:whiteb(binary_to_list(Nick)),
+                               binary_to_list(Username),
+                               binary_to_list(Host)]),
+  print_whois(realname, Realname),
+  {ok, State};
+
+handle_event({response, [_, _, rpl_whoisserver, _, _, Server, Location]}, State) ->
+  print_whois(server, Server, Location),
+  {ok, State};
+
+handle_event({response, [_, _, rpl_whoissecure, _, _, Msg]}, State) ->
+  print_whois("secure", Msg),
+  {ok, State};
+
+handle_event({response, [_, _, rpl_whoisaccount, _, _, Account, Msg]}, State) ->
+  print_whois("account", Msg, Account),
+  {ok, State};
+
+handle_event({response, [_, _, err_nosuchnick, _, Nick, Msg]}, State) ->
+  io:format("[~s] ~s ~s ~n", [color:redb("whois"), 
+                              color:whiteb(binary_to_list(Nick)),
+                              binary_to_list(Msg)]),
+  {ok, State};
+
+handle_event({response, [_, _, rpl_endofwhois, _, _, Msg]}, State) ->
+  io:format("[~s] ~s ~n", [color:redb("whois"), 
+                       binary_to_list(Msg)]),
+  {ok, State};
+
 % Everything else
 handle_event({response, Data}, State) ->
   io:format("[~s] ~p ~n", [color:greenb("info"), Data]),
@@ -124,3 +156,13 @@ print_topic(From, Channel, Topic) ->
                                  color:whiteb(binary_to_list(Channel)),
                                  color:whiteb(binary_to_list(From)),
                                  binary_to_list(Topic)]).
+print_whois(Item, Value) ->
+  io:format("[~s] ~s\t: ~s ~n", [color:redb("whois"),
+                                Item,
+                                binary_to_list(Value)]).
+print_whois(Item, Value, Value2) ->
+  io:format("[~s] ~s\t: ~s ~s ~n", [color:redb("whois"),
+                                Item,
+                                binary_to_list(Value),
+                                color:whiteb(binary_to_list(Value2))]).
+

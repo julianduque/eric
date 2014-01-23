@@ -23,6 +23,12 @@ parse_cmd(Line, Acc) ->
 strip_crlf(Text) ->
   re:replace(Text, "\r\n", "", [{return, binary}]).
 
+% https://www.alien.net.au/irc/irc2numerics.html
+cmd_to_atom(<<"001">>) -> rpl_welcome;
+cmd_to_atom(<<"002">>) -> rpl_yourhost;
+cmd_to_atom(<<"003">>) -> rpl_created;
+cmd_to_atom(<<"004">>) -> rpl_myinfo;
+cmd_to_atom(<<"005">>) -> rpl_isupport;
 cmd_to_atom(<<"200">>) -> rpl_tracelink;
 cmd_to_atom(<<"201">>) -> rpl_traceconnecting;
 cmd_to_atom(<<"202">>) -> rpl_traceandshake;
@@ -45,6 +51,7 @@ cmd_to_atom(<<"241">>) -> rpl_statslline;
 cmd_to_atom(<<"242">>) -> rpl_statsuptime;
 cmd_to_atom(<<"243">>) -> rpl_statsoline;
 cmd_to_atom(<<"244">>) -> rpl_statshline;
+cmd_to_atom(<<"250">>) -> rpl_statsconnn;
 cmd_to_atom(<<"251">>) -> rpl_luserclient;
 cmd_to_atom(<<"252">>) -> rpl_luserop;
 cmd_to_atom(<<"253">>) -> rpl_luserunknow;
@@ -53,6 +60,8 @@ cmd_to_atom(<<"255">>) -> rpl_luserme;
 cmd_to_atom(<<"256">>) -> rpl_ladminme;
 cmd_to_atom(<<"259">>) -> rpl_adminemail;
 cmd_to_atom(<<"261">>) -> rpl_tracelog;
+cmd_to_atom(<<"265">>) -> rpl_rpl_localusers;
+cmd_to_atom(<<"266">>) -> rpl_rpl_globalusers;
 cmd_to_atom(<<"300">>) -> rpl_none;
 cmd_to_atom(<<"301">>) -> rpl_away;
 cmd_to_atom(<<"302">>) -> rpl_userhost;
@@ -71,6 +80,7 @@ cmd_to_atom(<<"321">>) -> rpl_liststart;
 cmd_to_atom(<<"322">>) -> rpl_list;
 cmd_to_atom(<<"323">>) -> rpl_listend;
 cmd_to_atom(<<"324">>) -> rpl_channelmodeis;
+cmd_to_atom(<<"330">>) -> rpl_whoisaccount;
 cmd_to_atom(<<"331">>) -> rpl_notopic;
 cmd_to_atom(<<"332">>) -> rpl_topic;
 cmd_to_atom(<<"341">>) -> rpl_inviting;
@@ -89,6 +99,7 @@ cmd_to_atom(<<"372">>) -> rpl_motd;
 cmd_to_atom(<<"374">>) -> rpl_endofinfo;
 cmd_to_atom(<<"375">>) -> rpl_motdstart;
 cmd_to_atom(<<"376">>) -> rpl_endofmotd;
+cmd_to_atom(<<"378">>) -> rpl_whoishost;
 cmd_to_atom(<<"381">>) -> rpl_youreoper;
 cmd_to_atom(<<"382">>) -> rpl_rehashing;
 cmd_to_atom(<<"391">>) -> rpl_time;
@@ -141,6 +152,7 @@ cmd_to_atom(<<"491">>) -> err_nooperhost;
 cmd_to_atom(<<"492">>) -> err_noservicehost;
 cmd_to_atom(<<"501">>) -> err_umodeunknownflag;
 cmd_to_atom(<<"502">>) -> err_usersdontmatch;
+cmd_to_atom(<<"671">>) -> rpl_whoissecure;
 cmd_to_atom(<<"NOTICE">>) -> notice;
 cmd_to_atom(<<"PING">>) -> ping;
 cmd_to_atom(<<"JOIN">>) -> join;
@@ -152,4 +164,5 @@ cmd_to_atom(<<"QUIT">>) -> quit;
 cmd_to_atom(<<"KICK">>) -> kick;
 cmd_to_atom(<<"NICK">>) -> nick;
 cmd_to_atom(<<"TOPIC">>) -> topic;
+cmd_to_atom(<<"WHOX">>) -> whox;
 cmd_to_atom(Cmd) -> Cmd.
