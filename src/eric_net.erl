@@ -1,6 +1,8 @@
 -module(eric_net).
--export([start/1, start_link/1]).
--export([init/1]).
+-behaviour(gen_server).
+
+-export([start_link/1, connect/0, send/1, stop/0]).
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
 
 -include("eric.hrl").
 
@@ -10,16 +12,12 @@
                 host,
                 port,
                 socket,
-                client,
                 connected=false,
                 secure
                }).
 
-start(Config) ->
-  spawn(?MODULE, init, [Config]).
-
 start_link(Config) ->
-  spawn_link(?MODULE, init, [Config]).
+  gen_server:start_link({local, eric_net}, ?MODULE, Config, []).
 
 init(Config) ->
   Nick = eric_config:get(nick, "eric", Config),
@@ -29,39 +27,59 @@ init(Config) ->
   Port = eric_config:get(port, 6667, Config),
   Secure = eric_config:get_bool(secure, false, Config),
   State = #state{nick=Nick, username=Username, realname=Realname, host=Host, port=Port, secure=Secure},
-  loop(State).
+  {ok, State}.
 
-loop(State = #state{}) ->
+% Public API
+connect() ->
+  gen_server:call(eric_net, connect).
+
+send(Data) ->
+  gen_server:call(eric_net, {send, Data}).
+
+stop() ->
+  gen_server:cast(eric_net, stop).
+
+% Callbacks
+handle_call(connect, _Ref, State) ->
+  Return = case State#state.connected of
+             true -> {reply, ok, State};
+             false ->
+               Socket = connect(State),
+               NewState = State#state{socket=Socket, connected=true},
+               {reply, ok, NewState}
+           end,
+  Return;
+
+handle_call({send, Data}, _Ref, State) ->
   Network = get_network(State),
-  receive
-    {Client, connect} ->
-      case State#state.connected of
-        true ->
-          loop(State);
-        false ->
-          Socket = connect(State),
-          NewState = State#state{client=Client, socket=Socket, connected=true},
-          loop(NewState)
-      end;
-    {send, Data} ->
-      send(Network, State#state.socket, Data),
-      loop(State);
-    {Client, send, Data} ->
-      send(Network, State#state.socket, Data),
-      loop(State#state{client=Client});
-    {_, Socket, Data} ->
-      NewState = State#state{socket=Socket},
-      handle_receive(Data, NewState),
-      loop(NewState);
-    {tcp_closed, _Socket} ->
-      ok;
-    {ssl_closed, _Socket} ->
-      ok;
-    Unknown ->
-      io:format("Unknown ~p~n", [Unknown]),
-      loop(State)
-  end.
+  send(Network, State#state.socket, Data),
+  {reply, ok, State}.
 
+handle_cast(stop, State) ->
+  {stop, normal, State}.
+
+handle_info({_, Socket, Data}, State) ->
+  NewState = State#state{socket=Socket},
+  handle_receive(Data),
+  {noreply, NewState};
+
+handle_info({tcp_closed, _Socket},  State) ->
+  {noreply, State};
+
+handle_info({ssl_closed, _Socket}, State) ->
+  {noreply,  State};
+
+handle_info(Unknown, State) ->
+  io:format("Unknown message: ~p~n", [Unknown]),
+  {noreply, State}.
+
+code_change(_OldVsn, State, _Extra) ->
+  {ok, State}.
+
+terminate(_Reason, _State) ->
+  ok.
+
+% Private
 get_network(State) ->
   Network = case State#state.secure of
               true ->
@@ -89,6 +107,6 @@ connect(State) ->
 send(Network, Socket, Data) ->
   Network:send(Socket, Data ++ ?CRLF).
 
-handle_receive(Data, State) ->
-  Client = State#state.client,
+handle_receive(Data) ->
+  Client = whereis(eric),
   Client ! eric_parser:parse(Data).

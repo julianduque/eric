@@ -8,9 +8,6 @@
 %% Callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3, terminate/2]).
 
-%% Records
--record(state, {net}).
-
 %% API
 start(Config) ->
   start(Config, eric_log).
@@ -59,46 +56,45 @@ names(Channel) ->
 
 %% Callbacks
 init(Config) ->
-  Net = eric_net:start_link(Config),
-  State = #state{net=Net},
-  {ok, State}.
+  eric_net_sup:start_link(Config),
+  {ok, []}.
 
 %%% Calls
 handle_call(connect, _Ref, State) ->
-  State#state.net ! {self(), connect},
+  eric_net:connect(),
   {reply, ok, State};
 
 handle_call({send, Data}, _Ref, State) ->
-  State#state.net ! {self(), send, Data},
+  eric_net:send(Data),
   {reply, ok, State};
 
 handle_call({join, Channel}, _Ref, State) ->
-  State#state.net ! {send, "JOIN " ++ Channel},
+  eric_net:send("JOIN " ++ Channel),
   {reply, ok, State};
 
 handle_call({part, Channel}, _Ref, State) ->
-  State#state.net ! {send, "PART " ++ Channel},
+  eric_net:send("PART " ++ Channel),
   {reply, ok, State};
 
 handle_call({nick, Nick}, _Ref, State) ->
-  State#state.net ! {send, "NICK " ++ Nick},
+  eric_net:send("NICK " ++ Nick),
   {reply, ok, State};
 
 handle_call({msg, Channel, Message}, _Ref, State) ->
-  State#state.net ! {send, "PRIVMSG " ++ Channel ++ " :" ++ Message},
+  eric_net:send("PRIVMSG " ++ Channel ++ " :" ++ Message),
   {reply, ok, State};
 
 handle_call({names, Channel}, _Ref, State) ->
-  State#state.net ! {send, "NAMES " ++ Channel},
+  eric_net:send("NAMES " ++ Channel),
   {reply, ok, State};
 
 handle_call({quit, Message}, _Ref, State) ->
-  State#state.net ! {send, "QUIT :" ++ Message},
+  eric_net:send("QUIT :" ++ Message),
   {reply, ok, State}.
 
 %%% Casts
 handle_cast({whois, Nick}, State) ->
-  State#state.net ! {self(), send, "WHOIS " ++ Nick},
+  eric_net:send("WHOIS " ++ Nick),
   {noreply, State};
 
 handle_cast(stop, State) ->

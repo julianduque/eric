@@ -101,6 +101,10 @@ handle_event({response, [_, _, rpl_whoisserver, _, _, Server, Location]}, State)
   print_whois(server, Server, Location),
   {ok, State};
 
+handle_event({response, [_, _, rpl_whoischannels, _, _, Channels]}, State) ->
+  print_whois(channels, Channels),
+  {ok, State};
+
 handle_event({response, [_, _, rpl_whoissecure, _, _, Msg]}, State) ->
   print_whois("secure", Msg),
   {ok, State};
