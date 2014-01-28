@@ -107,6 +107,7 @@ cmd_to_atom(<<"392">>) -> rpl_userstart;
 cmd_to_atom(<<"393">>) -> rpl_users;
 cmd_to_atom(<<"394">>) -> rpl_endofusers;
 cmd_to_atom(<<"395">>) -> rpl_nousers;
+cmd_to_atom(<<"396">>) -> rpl_hosthidden;
 cmd_to_atom(<<"401">>) -> err_nosuchnick;
 cmd_to_atom(<<"402">>) -> err_nosuchserver;
 cmd_to_atom(<<"403">>) -> err_nosuchchannel;
