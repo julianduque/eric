@@ -56,7 +56,7 @@ names(Channel) ->
 
 %% Callbacks
 init(Config) ->
-  eric_net_sup:start_link(Config),
+  eric_net:start_link(Config),
   {ok, []}.
 
 %%% Calls
