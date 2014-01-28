@@ -1,21 +1,16 @@
 # Eric
 Erlang IRC Client
 
-**This is a Work in progress, just for educational purposes**
-
 ## Usage
 
 ``` erl
-Config = eric_config:load("client.config").
-{ok, Client} = eric:start(Config).
-
+application:start(eric).
 eric:connect().
 eric:join("#channel").
 eric:msg("#channel", "Hello world").
 eric:nick("EricII").
 eric:whois("eric").
 ```
-
 
 ## The MIT License (MIT)
 

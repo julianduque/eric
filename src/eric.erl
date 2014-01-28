@@ -24,39 +24,44 @@ stop() ->
 connect() ->
   gen_server:call(eric, connect).
 
-send(Data) ->
+send(Data) when is_list(Data) ->
   gen_server:call(eric, {send, Data}).
 
-nick(Nick) ->
+nick(Nick) when is_list(Nick) ->
   gen_server:call(eric, {nick, Nick}).
 
-join(Channel) ->
+join(Channel) when is_list(Channel) ->
   gen_server:call(eric, {join, Channel}).
 
-part(Channel) ->
+part(Channel) when is_list(Channel) ->
   gen_server:call(eric, {part, Channel}).
 
-msg(Channel, Message) ->
+msg(Channel, Message) when is_list(Channel) and is_list(Message) ->
   gen_server:call(eric, {msg, Channel, Message}).
 
-say(Channel, Message) ->
+say(Channel, Message) when is_list(Channel) and is_list(Message) ->
   msg(Channel, Message).
 
-whois(Nick) ->
+whois(Nick) when is_list(Nick) ->
   gen_server:cast(eric, {whois, Nick}).
 
 quit() ->
   gen_server:call(eric, {quit, []}).
 
-quit(Message) ->
+quit(Message) when is_list(Message) ->
   gen_server:call(eric, {quit, Message}).
 
-names(Channel) ->
+names(Channel) when is_list(Channel) ->
   gen_server:call(eric, {names, Channel}).
 
 %% Callbacks
 init(Config) ->
-  eric_net:start_link(Config),
+  case whereis(eric_net) of
+    undefined ->
+      eric_net:start(Config);
+    _Pid ->
+      ok
+  end,
   {ok, []}.
 
 %%% Calls
