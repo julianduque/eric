@@ -13,46 +13,46 @@ start(Config) ->
   start(Config, eric_log).
 
 start(Config, ResponseHandler) ->
-  Server = gen_server:start_link({local, eric}, ?MODULE, Config, []),
+  Server = gen_server:start_link({local, ?MODULE}, ?MODULE, Config, []),
   gen_event:start({local, response_handler}),
   gen_event:add_handler(response_handler, ResponseHandler, []),
   Server.
 
 stop() ->
-  gen_server:cast(eric, stop).
+  gen_server:cast(?MODULE, stop).
 
 connect() ->
-  gen_server:call(eric, connect).
+  gen_server:call(?MODULE, connect).
 
 send(Data) when is_list(Data) ->
-  gen_server:call(eric, {send, Data}).
+  gen_server:call(?MODULE, {send, Data}).
 
 nick(Nick) when is_list(Nick) ->
-  gen_server:call(eric, {nick, Nick}).
+  gen_server:call(?MODULE, {nick, Nick}).
 
 join(Channel) when is_list(Channel) ->
-  gen_server:call(eric, {join, Channel}).
+  gen_server:call(?MODULE, {join, Channel}).
 
 part(Channel) when is_list(Channel) ->
-  gen_server:call(eric, {part, Channel}).
+  gen_server:call(?MODULE, {part, Channel}).
 
 msg(Channel, Message) when is_list(Channel) and is_list(Message) ->
-  gen_server:call(eric, {msg, Channel, Message}).
+  gen_server:call(?MODULE, {msg, Channel, Message}).
 
 say(Channel, Message) when is_list(Channel) and is_list(Message) ->
   msg(Channel, Message).
 
 whois(Nick) when is_list(Nick) ->
-  gen_server:cast(eric, {whois, Nick}).
+  gen_server:cast(?MODULE, {whois, Nick}).
 
 quit() ->
-  gen_server:call(eric, {quit, []}).
+  gen_server:call(?MODULE, {quit, []}).
 
 quit(Message) when is_list(Message) ->
-  gen_server:call(eric, {quit, Message}).
+  gen_server:call(?MODULE, {quit, Message}).
 
 names(Channel) when is_list(Channel) ->
-  gen_server:call(eric, {names, Channel}).
+  gen_server:call(?MODULE, {names, Channel}).
 
 %% Callbacks
 init(Config) ->

@@ -17,10 +17,10 @@
                }).
 
 start(Config) ->
-  gen_server:start({local, eric_net}, ?MODULE, Config, []).
+  gen_server:start({local, ?MODULE}, ?MODULE, Config, []).
 
 start_link(Config) ->
-  gen_server:start_link({local, eric_net}, ?MODULE, Config, []).
+  gen_server:start_link({local, ?MODULE}, ?MODULE, Config, []).
 
 init(Config) ->
   Nick = eric_config:get(nick, "eric", Config),
@@ -34,13 +34,13 @@ init(Config) ->
 
 % Public API
 connect() ->
-  gen_server:call(eric_net, connect).
+  gen_server:call(?MODULE, connect).
 
 send(Data) when is_list(Data) ->
-  gen_server:call(eric_net, {send, Data}).
+  gen_server:call(?MODULE, {send, Data}).
 
 stop() ->
-  gen_server:cast(eric_net, stop).
+  gen_server:cast(?MODULE, stop).
 
 % Callbacks
 handle_call(connect, _Ref, State) ->
