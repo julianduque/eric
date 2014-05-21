@@ -1,15 +1,40 @@
 # Eric
 Erlang IRC Client
 
+## Build
+
+```
+$ make build
+```
+
+## Tests
+
+```
+$ make test
+```
+
 ## Usage
 
-``` erl
+### As a library
+
+``` erlang
 application:start(eric).
 eric:connect().
 eric:join("#channel").
 eric:msg("#channel", "Hello world").
 eric:nick("EricII").
 eric:whois("eric").
+```
+
+### As a client
+
+```
+$ make run
+erl -pa deps/*/ebin/ -pa ebin/ -eval "application:start(eric)"
+Erlang/OTP 17 [erts-6.0] [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]
+
+Eshell V6.0  (abort with ^G)
+1> eric:connect().
 ```
 
 ## The MIT License (MIT)
