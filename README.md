@@ -1,7 +1,7 @@
 # Eric
 Erlang IRC Client
 
-![Example](https://cloudup.com/iRRkFOIfz64)
+![Example](https://i.cloudup.com/uhlBCVfF6YK/aTinFt.gif)
 
 ## Build
 
