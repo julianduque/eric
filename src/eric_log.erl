@@ -109,6 +109,15 @@ handle_event({response, [_, _, rpl_whoissecure, _, _, Msg]}, State) ->
   print_whois("secure", Msg),
   {ok, State};
 
+handle_event({response, [_, _, rpl_whoishost, _, _, Msg]}, State) ->
+  print_whois("hostname", Msg),
+  {ok, State};
+
+handle_event({response, [_, _, rpl_whoisidle, _, _, Idle, _, _]}, State) ->
+  Seconds = list_to_binary(" seconds"),
+  print_whois("idle", <<Idle/binary, Seconds/binary>>),
+  {ok, State};
+
 handle_event({response, [_, _, rpl_whoisaccount, _, _, Account, Msg]}, State) ->
   print_whois("account", Msg, Account),
   {ok, State};
