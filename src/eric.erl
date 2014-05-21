@@ -103,7 +103,7 @@ handle_cast({whois, Nick}, State) ->
   {noreply, State};
 
 handle_cast(stop, State) ->
-  quit(),
+  eric_net:stop(),
   {stop, normal, State};
 
 handle_cast(_, State) ->

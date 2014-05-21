@@ -8,28 +8,14 @@
 %% Supervisor callbacks
 -export([init/1]).
 
-%% ===================================================================
-%% API functions
-%% ===================================================================
+-define(SERVER, ?MODULE).
 
 start_link(Config) ->
-  supervisor:start_link({local, ?MODULE}, ?MODULE, Config).
-
-%% ===================================================================
-%% Supervisor callbacks
-%% ===================================================================
+    supervisor:start_link({local, ?SERVER}, ?MODULE, Config).
 
 init(Config) ->
-  {
-   ok,
-   {
-     {
-      one_for_one,
-      1000,
-      3600
-     },
-     [
-      {eric, {eric, start, [Config]}, permanent, 2000, worker, [eric]}
-     ]
-    }
-  }.
+    Server = {eric, {eric, start, [Config]},
+      permanent, 2000, worker, [eric]},
+    Children = [Server],
+    RestartStrategy = {one_for_one, 0, 1},
+    {ok, {RestartStrategy, Children}}.
