@@ -166,4 +166,5 @@ cmd_to_atom(<<"KICK">>) -> kick;
 cmd_to_atom(<<"NICK">>) -> nick;
 cmd_to_atom(<<"TOPIC">>) -> topic;
 cmd_to_atom(<<"WHOX">>) -> whox;
+cmd_to_atom(<<"ERROR">>) -> error;
 cmd_to_atom(Cmd) -> Cmd.

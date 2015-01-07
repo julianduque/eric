@@ -17,41 +17,37 @@ handle_event({response, [_, _, pong, _, _]}, State) ->
 % PrivMsg
 handle_event({response, [From, _, privmsg, To, Message]}, State) ->
   io:format("[~s] <~s> ~s ~n", [
-      color:yellowb(binary_to_list(To)),
-      binary_to_list(From),
-      binary_to_list(Message)
-    ]
-  ),
+    color:yellowb(binary_to_list(To)),
+    binary_to_list(From),
+    binary_to_list(Message)
+  ]),
   {ok, State};
 
 % JOIN
 handle_event({response, [From, _, join, Channel, _]}, State) ->
   io:format("[~s] ~s has joined ~s ~n", [
-      color:blueb("join"),
-      color:whiteb(binary_to_list(From)),
-      color:whiteb(binary_to_list(Channel))
-    ]
-  ),
+    color:blueb("join"),
+    color:whiteb(binary_to_list(From)),
+    color:whiteb(binary_to_list(Channel))
+  ]),
   {ok, State};
 
 % PART
 handle_event({response, [From, _, part, Channel, _]}, State) ->
   io:format("[~s] ~s left ~s ~n", [
-      color:blueb("part"),
-      color:whiteb(binary_to_list(From)),
-      color:whiteb(binary_to_list(Channel))
-    ]
-  ),
+    color:blueb("part"),
+    color:whiteb(binary_to_list(From)),
+    color:whiteb(binary_to_list(Channel))
+  ]),
   {ok, State};
 
 % JOIN
 handle_event({response, [From, _, quit, Msg]}, State) ->
   io:format("[~s] ~s has quit - ~s ~n", [
-      color:blueb("quit"),
-      binary_to_list(From),
-      color:whiteb(binary_to_list(Msg))
-    ]
-  ),
+    color:blueb("quit"),
+    binary_to_list(From),
+    color:whiteb(binary_to_list(Msg))
+  ]),
   {ok, State};
 
 % TOPIC
@@ -66,20 +62,18 @@ handle_event({response, [From, _, topic, Channel, Topic]}, State) ->
 % NAMES
 handle_event({response, [_, _, rpl_namreply, _, _, Channel, Names]}, State) ->
   io:format("[~s] ~s: ~s ~n", [
-      color:blueb("names"),
-      color:whiteb(binary_to_list(Channel)),
-      binary_to_list(Names)
-    ]
-  ),
+    color:blueb("names"),
+    color:whiteb(binary_to_list(Channel)),
+    binary_to_list(Names)
+  ]),
   {ok, State};
 
 handle_event({response, [_, _, rpl_endofnames, _, Channel, Msg]}, State) ->
   io:format("[~s] ~s: ~s ~n", [
-      color:blueb("names"),
-      color:whiteb(binary_to_list(Channel)),
-      binary_to_list(Msg)
-    ]
-  ),
+    color:blueb("names"),
+    color:whiteb(binary_to_list(Channel)),
+    binary_to_list(Msg)
+  ]),
   {ok, State};
 
 % NOTICE
@@ -108,31 +102,39 @@ handle_event({response, [_, _, rpl_endofmotd, _, Msg]}, State) ->
 % NICK
 handle_event({response, [Nick, _, nick, NewNick]}, State) ->
   io:format("[~s] ~s is now known as ~s ~n", [
-      color:blueb("nick"), 
-      color:whiteb(binary_to_list(Nick)),
-      color:whiteb(binary_to_list(NewNick))
-    ]
-  ),
+    color:blueb("nick"), 
+    color:whiteb(binary_to_list(Nick)),
+    color:whiteb(binary_to_list(NewNick))
+  ]),
   {ok, State};
 
 handle_event({response, [_, _, err_nicknameinuse, _, Nick, Message]}, State) ->
-  io:format("[~s] ~s - ~s ~n",[
-      color:blueb("nick"), 
-      color:whiteb(binary_to_list(Nick)),
-      binary_to_list(Message)
-    ]
-  ),
+  io:format("[~s] ~s - ~s ~n", [
+    color:blueb("nick"), 
+    color:whiteb(binary_to_list(Nick)),
+    binary_to_list(Message)
+  ]),
+  {ok, State};
+
+% KICK
+handle_event({response, [Op, _, kick, Channel, Nick, Reason]}, State) ->
+  io:format("[~s] ~s was kicked from ~s by ~s [~s] ~n", [
+    color:blueb("kick"),
+    color:whiteb(binary_to_list(Nick)),
+    color:whiteb(binary_to_list(Channel)),
+    color:whiteb(binary_to_list(Op)),
+    color:whiteb(binary_to_list(Reason))
+  ]),
   {ok, State};
 
 % WHOIS
 handle_event({response, [_, _, rpl_whoisuser, _, Nick, Username, Host, _, Realname]}, State) ->
   io:format("[~s] ~s <~s@~s> ~n", [
-      color:redb("whois"),
-      color:whiteb(binary_to_list(Nick)),
-      binary_to_list(Username),
-      binary_to_list(Host)
-    ]
-  ),
+    color:redb("whois"),
+    color:whiteb(binary_to_list(Nick)),
+    binary_to_list(Username),
+    binary_to_list(Host)
+  ]),
   print_whois(realname, Realname),
   {ok, State};
 
@@ -163,24 +165,24 @@ handle_event({response, [_, _, rpl_whoisaccount, _, _, Account, Msg]}, State) ->
 
 handle_event({response, [_, _, err_nosuchnick, _, Nick, Msg]}, State) ->
   io:format("[~s] ~s ~s ~n", [
-      color:redb("whois"),
-      color:whiteb(binary_to_list(Nick)),
-      binary_to_list(Msg)
-    ]
-  ),
+    color:redb("whois"),
+    color:whiteb(binary_to_list(Nick)),
+    binary_to_list(Msg)
+  ]),
   {ok, State};
 
 handle_event({response, [_, _, rpl_endofwhois, _, _, Msg]}, State) ->
-  io:format("[~s] ~s ~n", [
-      color:redb("whois"),
-      binary_to_list(Msg)
-    ]
-  ),
+  io:format("[~s] ~s ~n", [color:redb("whois"), binary_to_list(Msg)]),
+  {ok, State};
+
+% Error
+handle_event({response, [_, _, error, Error]}, State) ->
+  io:format("[~s] ~s ~n",  [color:redb("error"), binary_to_list(Error)]),
   {ok, State};
 
 % Everything else
 handle_event({response, Data}, State) ->
-  io:format("[~s] ~p ~n", [color:greenb("info"), Data]),
+  io:format("[~s] ~p ~n", [color:cyanb("unknown"), Data]),
   {ok, State};
 
 handle_event(_, State) ->
